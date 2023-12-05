@@ -5,11 +5,13 @@ const Sector = () => {
     const [sectors, setSectors] = useState([]);
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
+	const [skills, setSkills] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
         sector: "",
         category: "",
-        product: "", 
+        product: "",
+		skill: "", 
         terms: false,
     });
     const [submissionStatus, setSubmissionStatus] = useState(null);
@@ -41,7 +43,9 @@ const Sector = () => {
             await fetchCategories(e.target.value);
         } else if (e.target.name === "category") {
             await fetchProducts(e.target.value);
-        }
+        } else if (e.target.name === "product") {
+			await fetchSkills(e.target.value);
+		}
     };
 
     const handleCheckboxChange = (e) => {
@@ -75,13 +79,20 @@ const Sector = () => {
         try {
             const response = await axios.get(`http://localhost:9098/api/products/categories/${selectedCategory}`);
             setProducts(response.data);
+			setSkills([]);
         } catch (error) {
             console.error("Error fetching products:", error);
         }
     };
 
-
-
+	const fetchSkills = async (selectedSkill) => {
+		try {
+			const response = await axios.get(`http://localhost:9098/api/skills/products/${selectedSkill}`);
+			setSkills(response.data);
+		} catch (error) {
+			console.error("Error fetching skills:", error);
+		}
+	}
 
     return (
         <div className="wrapper">
@@ -142,6 +153,19 @@ const Sector = () => {
                                     </option>
                                 ))}
                             </select>
+							<label>Skills</label>
+                            <select
+                                name="skill"
+                                value={formData.skill}
+                                onChange={handleInputChange}
+                            >
+                                <option value={""}>select skill</option>
+                                {skills.map((skill, index) => (
+                                    <option key={index} value={skill.id}>
+                                        {skill.name}
+                                    </option>
+                                ))}
+                            </select>
                             <div className="terms-container">
                                 <input
                                     type="checkbox"
@@ -154,6 +178,7 @@ const Sector = () => {
                             <button type="submit">Submit</button>
                         </form>
                     )}
+						{/* <Link to={"/users"}>show user</Link> */}
                 </div>
             </div>
             {submissionStatus && (
