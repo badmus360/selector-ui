@@ -1,13 +1,20 @@
 import './App.css';
 import Sector from './sector/Sector';
-import Form from './sector/Form';
+import { Route, Routes } from "react-router-dom";
+import Users from "./sector/Users";
 
 function App() {
   return (
-    <div className="App">
-      <Sector />
-      {/* <Form /> */}
-    </div>
+<Routes>
+			<Route
+				path="/"
+				element={<Sector />}
+			/>
+			<Route
+				path="users"
+				element={<Users />}
+			/>
+	</Routes>
   );
 }
 

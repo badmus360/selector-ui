@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const Sector = () => {
     const [sectors, setSectors] = useState([]);
+  
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
 	const [skills, setSkills] = useState([]);
@@ -16,11 +18,13 @@ const Sector = () => {
     });
     const [submissionStatus, setSubmissionStatus] = useState(null);
     const [loading, setLoading] = useState(true);
+    
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:9098/api/sectors/info");
+                const response = await axios.get("http://localhost:9098/api/sector/info");
                 const sectorNames = response.data;
 
                 setSectors(sectorNames);
@@ -34,32 +38,39 @@ const Sector = () => {
     }, []);
 
     const handleInputChange = async (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value, type, checked } = e.target;
+        setFormData((prevData) => ({...prevData, [name]: type ===
+        'checkbox'
+        ? checked : value,     
+        }));    
+        // setFormData({
+        //     ...formData,
+        //     [e.target.name]: e.target.value,
+        // });
 
         if (e.target.name === "sector") {
+            setCategories([])
             await fetchCategories(e.target.value);
         } else if (e.target.name === "category") {
+            setProducts([])
             await fetchProducts(e.target.value);
         } else if (e.target.name === "product") {
+            setSkills([])
 			await fetchSkills(e.target.value);
 		}
-    };
-
-    const handleCheckboxChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.checked,
-        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:9098/api/sectors/submit", formData);
-            setSubmissionStatus("Form submitted successfully!");
+
+            console.log("formData", formData);
+
+            const response = await axios.post("http://localhost:9098/api/user/submit", formData);
+            if (response) {
+                navigate("/users");
+            }
+            setSubmissionStatus("Form submitted successfully! User ID: " + response.data);
         } catch (error) {
             setSubmissionStatus("Error submitting form.");
         }
@@ -67,9 +78,8 @@ const Sector = () => {
 
     const fetchCategories = async (selectedSector) => {
         try {
-            const response = await axios.get(`http://localhost:9098/api/sectors/categories/${selectedSector}`);
+            const response = await axios.get(`http://localhost:9098/api/category/categories/${selectedSector}`);
             setCategories(response.data);
-            setProducts([]); // Reset products when changing categories
         } catch (error) {
             console.error("Error fetching categories:", error);
         }
@@ -77,17 +87,16 @@ const Sector = () => {
 
     const fetchProducts = async (selectedCategory) => {
         try {
-            const response = await axios.get(`http://localhost:9098/api/products/categories/${selectedCategory}`);
+            const response = await axios.get(`http://localhost:9098/api/product/categories/${selectedCategory}`);
             setProducts(response.data);
-			setSkills([]);
         } catch (error) {
             console.error("Error fetching products:", error);
         }
     };
 
-	const fetchSkills = async (selectedSkill) => {
+	const fetchSkills = async (selectedProduct) => {
 		try {
-			const response = await axios.get(`http://localhost:9098/api/skills/products/${selectedSkill}`);
+			const response = await axios.get(`http://localhost:9098/api/skill/products/${selectedProduct}`);
 			setSkills(response.data);
 		} catch (error) {
 			console.error("Error fetching skills:", error);
@@ -114,6 +123,7 @@ const Sector = () => {
                                 value={formData.name}
                                 onChange={handleInputChange}
                             />
+
                             <label>Sectors</label>
                             <select
                                 name="sector"
@@ -127,6 +137,9 @@ const Sector = () => {
                                     </option>
                                 ))}
                             </select>
+
+                            {categories.length > 0 &&
+                            <>
                             <label>Categories</label>
                             <select
                                 name="category"
@@ -134,12 +147,15 @@ const Sector = () => {
                                 onChange={handleInputChange}
                             >
                                 <option value={""}>select category</option>
-                                {categories.map((category, index) => (
-                                    <option key={index} value={category.id}>
+                                {categories.map((category,index) => (
+                                    <option key={index} value={category.name}>
                                         {category.name}
                                     </option>
                                 ))}
                             </select>
+                            </>}
+
+                           {products.length > 0 && <>
                             <label>Products</label>
                             <select
                                 name="product"
@@ -148,12 +164,15 @@ const Sector = () => {
                             >
                                 <option value={""}>select product</option>
                                 {products.map((product, index) => (
-                                    <option key={index} value={product.id}>
+                                    <option key={index} value={product.name}>
                                         {product.name}
                                     </option>
                                 ))}
                             </select>
-							<label>Skills</label>
+                            </>}
+
+							{skills.length > 0 && <>
+                                <label>Skills</label>
                             <select
                                 name="skill"
                                 value={formData.skill}
@@ -161,29 +180,36 @@ const Sector = () => {
                             >
                                 <option value={""}>select skill</option>
                                 {skills.map((skill, index) => (
-                                    <option key={index} value={skill.id}>
+                                    <option key={index} value={skill.name}>
                                         {skill.name}
                                     </option>
                                 ))}
                             </select>
+                            </>}
+
+                            {submissionStatus && (
+                            <div className="submission-status">{submissionStatus}</div>
+                            )}
+
+                                
                             <div className="terms-container">
-                                <input
-                                    type="checkbox"
-                                    name="terms"
-                                    checked={formData.terms}
-                                    onChange={handleCheckboxChange}
-                                />
-                                <p className="term">Agree to terms</p>
-                            </div>
-                            <button type="submit">Submit</button>
-                        </form>
+							<input
+								type="checkbox"          
+                                value={formData.terms}          
+                                onChange={handleInputChange}          
+                                id="agreetoterms"          
+                                name="terms"
+                                
+							/>
+							<p className="term">Agree to terms</p>
+						</div>
+
+                            <button type="submit" disabled={!formData.terms}>Submit</button>
+                            <Link to={"/users"} className="link-style">show user</Link>
+                        </form>  
                     )}
-						{/* <Link to={"/users"}>show user</Link> */}
                 </div>
             </div>
-            {submissionStatus && (
-                <div className="submission-status">{submissionStatus}</div>
-            )}
         </div>
     );
 };
