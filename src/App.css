@@ -11,7 +11,7 @@ body {
   }
   
   .container {
-	max-width: 800px;
+	width: 800px;
 	margin: 0 auto; 
 	background-color: #f8f8f8; 
 	padding: 20px;
@@ -54,6 +54,16 @@ body {
 	margin-bottom: 2rem;
 	font-size: 1.3rem;
 	font-weight: 300;
+}
+
+
+.submission-status {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8d7da; /* Light red background color */
+    color: #721c24; /* Dark red text color */
+    border-radius: 5px;
 }
 
 .form {
@@ -140,13 +150,6 @@ select {
 	margin-bottom: 1rem;
 }
 
-.terms-container {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-bottom: 2rem;
-}
-
 button {
 	width: 100%;
 	padding: 25px 20px;
@@ -175,8 +178,11 @@ label {
 
 #customers td,
 #customers th {
-	border: 1px solid #ddd;
-	padding: 8px;
+		width: 100px;
+		height: 50px;
+		border: 1px solid black;
+		text-align: center; 
+		vertical-align: middle;
 }
 
 #customers tr:nth-child(even) {
@@ -197,7 +203,6 @@ label {
 .update,
 .detail {
 	border: none;
-	padding: 10px 20px;
 	cursor: pointer;
 }
 .detail {
@@ -221,69 +226,31 @@ label {
 	font-weight: 400;
 }
 
-* {
-    padding: 0;
-    margin: 0;
-}
-
-body {
-    background-color: rgba(254, 236, 183, 255);
-}
-
-.wrapper {
-    min-height: 100vh;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #f8f8f8;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin-top: 40px;
-}
-
-.form-container {
-    float: 1;
-    padding: 70px 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.h2-Users {
-    text-align: center;
-    color: #3498db;
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.title {
-    text-align: center;
-    color: #e74c3c;
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.form-container .h2 {
-    font-size: 2rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.3cm;
-}
-
 .title {
     margin-bottom: 2rem;
     font-size: 1.3rem;
     font-weight: 300;
 }
 
+.terms-container {
+    display: flex;
+    align-items: center;
+	gap: 20px;
+} 
+
+.terms-container input {
+    margin-top: 19px;
+} 
+
+.term {
+    font-size: 15px;
+    color: red;
+    margin-left: 8px;
+	font-weight: bold;
+}
 @media (max-width: 600px) {
     .form {
-        width: 90%; /* Adjust width for smaller screens */
+        width: 90%; 
     }
 
     .form-container {

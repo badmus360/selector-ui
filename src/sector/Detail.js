@@ -58,12 +58,33 @@ const Detail = ({ updateModel, setUpdateModel, user , setReload, reload}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        if (!formData.sector) {
+            setSubmissionStatus("Please select a sector.");
+            return;
+        }
+    
+        if (categories.length > 0 && !formData.category) {
+            setSubmissionStatus("Please select a category.");
+            return;
+        }
+    
+        if (products.length > 0 && !formData.product) {
+            setSubmissionStatus("Please select a product.");
+            return;
+        }
+    
+        if (skills.length > 0 && !formData.skill) {
+            setSubmissionStatus("Please select a skill.");
+            return;
+        }    
+
         try {
 
             console.log("formData", formData);
             console.log("user?.id", user?.id);
 
-            const response = await axios.put(`http://localhost:9098/api/user/update/${user?.id}`, formData);
+            const response = await axios.put(`https://selector-production.up.railway.app/api/user/update/${user?.id}`, formData);
             if (response) {
                 setReload(!reload);
             }
@@ -76,7 +97,7 @@ const Detail = ({ updateModel, setUpdateModel, user , setReload, reload}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:9098/api/sector/info");
+                const response = await axios.get("https://selector-production.up.railway.app/api/sector/info");
                 const sectorNames = response.data;
 
                 setSectors(sectorNames);
@@ -90,7 +111,7 @@ const Detail = ({ updateModel, setUpdateModel, user , setReload, reload}) => {
 
     const fetchCategories = async (selectedSector) => {
         try {
-            const response = await axios.get(`http://localhost:9098/api/category/categories/${selectedSector}`);
+            const response = await axios.get(`https://selector-production.up.railway.app/api/category/categories/${selectedSector}`);
             setCategories(response.data);
             setProducts([]); // Reset products when changing categories
         } catch (error) {
@@ -100,7 +121,7 @@ const Detail = ({ updateModel, setUpdateModel, user , setReload, reload}) => {
 
     const fetchProducts = async (selectedCategory) => {
         try {
-            const response = await axios.get(`http://localhost:9098/api/product/categories/${selectedCategory}`);
+            const response = await axios.get(`https://selector-production.up.railway.app/api/product/categories/${selectedCategory}`);
             setProducts(response.data);
 			setSkills([]);
         } catch (error) {
@@ -110,7 +131,7 @@ const Detail = ({ updateModel, setUpdateModel, user , setReload, reload}) => {
 
 	const fetchSkills = async (selectedProduct) => {
 		try {
-			const response = await axios.get(`http://localhost:9098/api/skill/products/${selectedProduct}`);
+			const response = await axios.get(`https://selector-production.up.railway.app/api/skill/products/${selectedProduct}`);
 			setSkills(response.data);
 		} catch (error) {
 			console.error("Error fetching skills:", error);
@@ -171,7 +192,6 @@ const Detail = ({ updateModel, setUpdateModel, user , setReload, reload}) => {
                     ))}
                 </select>
                 </>}
-
 
                 {skills.length > 0 && <>
                     <label>Skills</label>

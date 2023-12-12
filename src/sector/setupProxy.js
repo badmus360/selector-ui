@@ -4,7 +4,7 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:9098',
+      target: 'https://selector-production.up.railway.app/',
       changeOrigin: true,
     })
   );

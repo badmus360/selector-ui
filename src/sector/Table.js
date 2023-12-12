@@ -7,9 +7,7 @@ import axios from "axios";
 function Table(props) {
 	const { titles, users, setReload, reload } = props;
 	const [user, setUser] = useState(null);
-	const [detailModel, setDetailModel] = useState(false);
 	const [updateModel, setUpdateModel] = useState(false);
-
 
 	const showUpdate = (e) => {
 		const { id } = e.target.dataset;
@@ -22,7 +20,7 @@ function Table(props) {
 
 	const handleDelete = async (userId) => {
         try {
-            const response = await axios.delete(`http://localhost:9098/api/user/delete/${userId}`);
+            const response = await axios.delete(`https://selector-production.up.railway.app/api/user/delete/${userId}`);
             if (response) {
                 setReload(!reload);
                 setUpdateModel(false);
@@ -75,7 +73,6 @@ function Table(props) {
 			</table>
 
 			<Detail
-				modalIsOpen={detailModel}
 				updateModel={updateModel}
 				setUpdateModel={setUpdateModel}
 				user={user}

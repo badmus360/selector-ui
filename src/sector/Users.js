@@ -11,7 +11,7 @@ const Users = () => {
 	useEffect(() => {
 		const fetchData = () => {
 			axios
-				.get("http://localhost:9098/api/user/all")
+				.get("https://selector-production.up.railway.app/api/user/all")
 				.then((response) => response.data)
 				.then((data) => {
 					console.log(data);

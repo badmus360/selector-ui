@@ -24,7 +24,7 @@ const Sector = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:9098/api/sector/info");
+                const response = await axios.get("https://selector-production.up.railway.app/api/sector/info");
                 const sectorNames = response.data;
 
                 setSectors(sectorNames);
@@ -43,10 +43,6 @@ const Sector = () => {
         'checkbox'
         ? checked : value,     
         }));    
-        // setFormData({
-        //     ...formData,
-        //     [e.target.name]: e.target.value,
-        // });
 
         if (e.target.name === "sector") {
             setCategories([])
@@ -62,11 +58,42 @@ const Sector = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!formData.name) {
+            setSubmissionStatus("Please enter your name.");
+            return;
+        }
+    
+        if (!formData.sector) {
+            setSubmissionStatus("Please select a sector.");
+            return;
+        }
+    
+        if (categories.length > 0 && !formData.category) {
+            setSubmissionStatus("Please select a category.");
+            return;
+        }
+    
+        if (products.length > 0 && !formData.product) {
+            setSubmissionStatus("Please select a product.");
+            return;
+        }
+    
+        if (skills.length > 0 && !formData.skill) {
+            setSubmissionStatus("Please select a skill.");
+            return;
+        }
+
+        if (!formData.terms) {
+            setSubmissionStatus("Please agree to terms.");
+            return;
+        }
+
         try {
 
             console.log("formData", formData);
 
-            const response = await axios.post("http://localhost:9098/api/user/submit", formData);
+            const response = await axios.post("https://selector-production.up.railway.app/api/user/submit", formData);
             if (response) {
                 navigate("/users");
             }
@@ -78,7 +105,7 @@ const Sector = () => {
 
     const fetchCategories = async (selectedSector) => {
         try {
-            const response = await axios.get(`http://localhost:9098/api/category/categories/${selectedSector}`);
+            const response = await axios.get(`https://selector-production.up.railway.app/api/category/categories/${selectedSector}`);
             setCategories(response.data);
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -87,7 +114,7 @@ const Sector = () => {
 
     const fetchProducts = async (selectedCategory) => {
         try {
-            const response = await axios.get(`http://localhost:9098/api/product/categories/${selectedCategory}`);
+            const response = await axios.get(`https://selector-production.up.railway.app/api/product/categories/${selectedCategory}`);
             setProducts(response.data);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -96,7 +123,7 @@ const Sector = () => {
 
 	const fetchSkills = async (selectedProduct) => {
 		try {
-			const response = await axios.get(`http://localhost:9098/api/skill/products/${selectedProduct}`);
+			const response = await axios.get(`https://selector-production.up.railway.app/api/skill/products/${selectedProduct}`);
 			setSkills(response.data);
 		} catch (error) {
 			console.error("Error fetching skills:", error);
@@ -193,18 +220,17 @@ const Sector = () => {
 
                                 
                             <div className="terms-container">
-							<input
-								type="checkbox"          
-                                value={formData.terms}          
-                                onChange={handleInputChange}          
-                                id="agreetoterms"          
-                                name="terms"
-                                
-							/>
-							<p className="term">Agree to terms</p>
-						</div>
+                                <input
+                                    type="checkbox"          
+                                    value={formData.terms}          
+                                    onChange={handleInputChange}          
+                                    id="agreetoterms"          
+                                    name="terms"
+                                />
+                                <p className="term">Agree to terms</p>
+						    </div>
 
-                            <button type="submit" disabled={!formData.terms}>Submit</button>
+                            <button type="submit">Submit</button>
                             <Link to={"/users"} className="link-style">show user</Link>
                         </form>  
                     )}
